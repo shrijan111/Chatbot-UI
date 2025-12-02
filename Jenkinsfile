@@ -15,7 +15,13 @@ pipeline {
         }
         stage('Install Dependencies') {
             steps {
+                sh '''
+                npm set fetch-retries 5
+                npm set fetch-retry-mintimeout 20000
+                npm set fetch-retry-maxtimeout 120000
+                rm -rf node_modules package-lock.json
                 sh 'npm install --legacy-peer-deps'
+                '''
             }
         }
         stage('Build App') {
