@@ -1,7 +1,7 @@
 pipeline {
     agent any
     tools {
-        nodejs 'node19'   // Must match the Name you set in Jenkins
+        nodejs 'node20'   // Must match the Name you set in Jenkins
     }
     environment {
         DOCKER_IMAGE = "la000la/chatbot-ui:latest"
