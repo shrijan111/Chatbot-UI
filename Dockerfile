@@ -1,23 +1,26 @@
-# Use official Node.js LTS image
-FROM node:20
-
-# Set working directory
+# ---- Base Node ----
+FROM node:20-alpine AS base
 WORKDIR /app
-
-# Copy package.json and package-lock.json
 COPY package*.json ./
 
-# Install dependencies
-RUN npm install --legacy-peer-deps
+# ---- Dependencies ----
+FROM base AS dependencies
+RUN npm ci --legacy-peer-deps
 
-# Copy app source code
+# ---- Build ----
+FROM dependencies AS build
 COPY . .
-
-# Build the app
 RUN npm run build -- --webpack
 
-# Expose port 3000
-EXPOSE 3000
+# ---- Production ----
+FROM node:20-alpine AS production
+WORKDIR /app
+COPY --from=dependencies /app/node_modules ./node_modules
+COPY --from=build /app/.next ./.next
+COPY --from=build /app/public ./public
+COPY --from=build /app/package*.json ./
+COPY --from=build /app/next.config.js ./next.config.js
+COPY --from=build /app/next-i18next.config.js ./next-i18next.config.js
 
-# Start the app
+EXPOSE 3000
 CMD ["npm", "start"]
