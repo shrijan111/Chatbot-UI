@@ -16,3 +16,5 @@ logs:
 push:
 	docker tag chatbot-ui:latest ${DOCKER_USER}/chatbot-ui:${DOCKER_TAG}
 	docker push ${DOCKER_USER}/chatbot-ui:${DOCKER_TAG}
+
+
